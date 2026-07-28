@@ -10,6 +10,9 @@ import DressCode from './components/DressCode';
 import RSVPForm from './components/RSVPForm';
 import Programme from './components/Programme';
 import BibleVerses from './components/BibleVerses';
+import waxSealUrl from './assets/images/nm_gold_wax_seal_1785247868796.jpg';
+import floralBgUrl from './assets/images/kp_floral_wallpaper_1783875359536.jpg';
+import resortUrl from './assets/images/buraha_zenoni_resort_1783874401777.jpg';
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,11 +22,6 @@ export default function App() {
 
   // Background Audio - Romantic Canon in D
   const canonDUrl = 'https://upload.wikimedia.org/wikipedia/commons/c/c6/Canon_in_D_Major_%28ISRC_USUAN1100301%29.mp3';
-
-  // Paths to generated assets
-  const waxSealUrl = '/src/assets/images/nm_gold_wax_seal_1785247868796.jpg';
-  const floralBgUrl = '/src/assets/images/kp_floral_wallpaper_1783875359536.jpg';
-  const resortUrl = '/src/assets/images/buraha_zenoni_resort_1783874401777.jpg';
 
   // Toggle background music
   const toggleMusic = () => {
