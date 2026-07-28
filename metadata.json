@@ -1,0 +1,8 @@
+{
+  "name": "Nyawira & Mainah Wedding Minisite",
+  "description": "Elegant wedding minisite for Nyawira & Mainah featuring an interactive envelope with wax seal, Sage & Beige theme, ACK Emmanuel Church Kikuyu, Leilani Gardens Kikuyu, Programme, Bible Verses, and RSVP.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
