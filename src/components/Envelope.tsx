@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import floralBgUrl from '../assets/images/kp_floral_wallpaper_1783875359536.jpg';
 
 interface EnvelopeProps {
   onOpen: () => void;
@@ -33,8 +34,6 @@ export default function Envelope({
       onOpen();
     }, 1500);
   };
-
-  const floralBgUrl = '/src/assets/images/kp_floral_wallpaper_1783875359536.jpg';
 
   return (
     <motion.div
