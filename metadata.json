@@ -1,0 +1,8 @@
+{
+  "name": "Nyawira & Mainah Wedding Invitation",
+  "description": "An elegant wedding invitation and RSVP portal for Nyawira and Mainah's wedding at ACK Emmanuel Church Kikuyu and Leilani Gardens Kikuyu on Wednesday, 19th August 2026.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

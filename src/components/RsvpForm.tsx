@@ -1,0 +1,570 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Clipboard, QrCode, Download, Share2, CloudLightning, Users, Baby, Plus, Minus, Image as ImageIcon } from 'lucide-react';
+import { toPng } from 'html-to-image';
+import { RsvpGuest } from '../types';
+import { WEDDING_DETAILS } from '../data';
+import { saveRsvp, isFirebaseConfigured, hasPhoneAlreadyRsvped } from '../lib/firebase';
+import portraitImg from '../assets/images/wedding_portrait_1785380701719.jpg';
+
+export default function RsvpForm() {
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [willAttend, setWillAttend] = useState<'yes' | 'no'>('yes');
+  const [adultsCount, setAdultsCount] = useState(1);
+  const [childrenCount, setChildrenCount] = useState(0);
+  const [notes, setNotes] = useState('');
+  
+  const [loading, setLoading] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [submittedGuest, setSubmittedGuest] = useState<RsvpGuest | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Floating button state
+  const [showFloatingBtn, setShowFloatingBtn] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const rsvpSection = document.getElementById('rsvp-section');
+      if (rsvpSection) {
+        const rect = rsvpSection.getBoundingClientRect();
+        // If RSVP section is visible on screen, hide floating button to avoid redundancy
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          setShowFloatingBtn(false);
+        } else {
+          setShowFloatingBtn(true);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleDownloadECard = async () => {
+    if (!cardRef.current || !submittedGuest) return;
+    setDownloading(true);
+    try {
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: '#FCFAF7'
+      });
+      const link = document.createElement('a');
+      const safeName = submittedGuest.fullName.replace(/[^a-zA-Z0-9]/g, '_');
+      link.download = `Nyawira_Mainah_Wedding_ECard_${safeName}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to generate downloadable e-card image:', err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const generateInvitationCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'NM-26-';
+    for (let i = 0; i < 4; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  };
+
+  const handleRsvpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!fullName.trim()) {
+      setErrorMessage('Please enter your full name.');
+      return;
+    }
+    if (!phoneNumber.trim()) {
+      setErrorMessage('Please enter your phone number.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Check if phone number has already submitted an RSVP
+      const alreadySubmitted = await hasPhoneAlreadyRsvped(phoneNumber.trim());
+      if (alreadySubmitted) {
+        setErrorMessage('This phone number has already submitted an RSVP. Each phone number can only RSVP once. Please contact Nyawira or Mainah if you need to update your attendance details.');
+        setLoading(false);
+        return;
+      }
+
+      const newGuest: RsvpGuest = {
+        id: 'rsvp-' + Date.now(),
+        fullName: fullName.trim(),
+        phoneNumber: phoneNumber.trim(),
+        willAttend,
+        adultsCount: willAttend === 'yes' ? adultsCount : 0,
+        childrenCount: willAttend === 'yes' ? childrenCount : 0,
+        submittedAt: new Date().toISOString(),
+        eCardCode: generateInvitationCode(),
+        notes: notes.trim() || undefined,
+      };
+
+      // Save to Firebase (with transparent localStorage fallback inside)
+      await saveRsvp(newGuest);
+
+      setSubmittedGuest(newGuest);
+      setLoading(false);
+
+      // Reset fields
+      setFullName('');
+      setPhoneNumber('');
+      setWillAttend('yes');
+      setAdultsCount(1);
+      setChildrenCount(0);
+      setNotes('');
+
+      // Dispatches custom event to notify Admin Panel to reload
+      window.dispatchEvent(new Event('rsvp_database_updated'));
+    } catch (err) {
+      setErrorMessage('Something went wrong. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  const scrollToRsvp = () => {
+    const element = document.getElementById('rsvp-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <>
+      <section className="relative py-24 bg-[#FAF7F2] text-stone-850 border-t border-stone-200/60" id="rsvp-section">
+        {/* Decorative backdrop glow */}
+        <div className="absolute inset-0 bg-radial-gradient from-emerald-500/[0.01] via-transparent to-transparent pointer-events-none" />
+
+        <div className="container mx-auto px-4 max-w-4xl relative z-10">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-display font-light text-stone-900 mt-2 mb-4">Confirm Attendance</h2>
+            <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-sage-600/30 to-transparent mx-auto" />
+            <p className="text-stone-600 text-sm md:text-base mt-4 max-w-xl mx-auto italic font-serif">
+              Kindly RSVP by 5th August 2026 to help us prepare for your presence. Thank you!
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+            {/* Form Column */}
+            <div className="md:col-span-6 bg-white border border-stone-200/60 p-8 rounded-2xl shadow-md">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="font-serif text-xl text-stone-900 flex items-center gap-2 font-medium">
+                  <Mail className="w-5 h-5 text-sage-700" />
+                  <span>RSVP Form</span>
+                </h3>
+                {isFirebaseConfigured ? (
+                  <span className="flex items-center gap-1.5 text-[9px] text-sage-700 bg-sage-50 border border-sage-200/60 px-2.5 py-0.5 rounded-full font-sans font-bold uppercase tracking-wider shadow-xs">
+                    <span className="w-1.5 h-1.5 bg-sage-600 rounded-full animate-pulse" />
+                    <span>Cloud Synced</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-[9px] text-stone-500 bg-stone-100 border border-stone-250 px-2.5 py-0.5 rounded-full font-sans font-semibold uppercase tracking-wider" title="Configure VITE_FIREBASE_API_KEY environment variables to activate cloud database integration.">
+                    <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
+                    <span>Local Sandbox</span>
+                  </span>
+                )}
+              </div>
+
+              <form onSubmit={handleRsvpSubmit} className="space-y-5" id="rsvp-wedding-form">
+                {/* Full Name input */}
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold flex items-center gap-1">
+                    <User className="w-3.5 h-3.5 text-stone-400" />
+                    <span>Full Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Nyawira Mainah"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full bg-stone-50/50 border border-stone-200 focus:border-sage-700 focus:ring-1 focus:ring-sage-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
+                  />
+                </div>
+
+                {/* Phone Number input */}
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold flex items-center gap-1">
+                    <Phone className="w-3.5 h-3.5 text-stone-400" />
+                    <span>Phone Number</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="e.g. +254 724 783 311"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full bg-stone-50/50 border border-stone-200 focus:border-sage-700 focus:ring-1 focus:ring-sage-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all"
+                  />
+                </div>
+
+                {/* Will Attend toggle radio */}
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold block">
+                    Will you attend?
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setWillAttend('yes')}
+                      className={`py-3.5 text-xs uppercase tracking-wider font-sans font-bold border rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        willAttend === 'yes'
+                          ? 'bg-sage-700 border-sage-700 text-white shadow-md'
+                          : 'bg-stone-50 border-stone-200 text-stone-500 hover:text-stone-800 hover:border-stone-300'
+                      }`}
+                    >
+                      <Check className="w-4 h-4 shrink-0" />
+                      <span>Yes, with pleasure!</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setWillAttend('no')}
+                      className={`py-3.5 text-xs uppercase tracking-wider font-sans font-bold border rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                        willAttend === 'no'
+                          ? 'bg-rose-50 border border-rose-300 text-rose-700 shadow-xs'
+                          : 'bg-stone-50 border-stone-200 text-stone-500 hover:text-stone-800 hover:border-stone-300'
+                      }`}
+                    >
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>No, sends love</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Number of Adults & Children Attending */}
+                <AnimatePresence>
+                  {willAttend === 'yes' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-3 pt-2 pb-1 overflow-hidden"
+                    >
+                      <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold block">
+                        Number of Guests Attending
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {/* Adults Input */}
+                        <div className="bg-stone-50/70 border border-stone-200 p-3.5 rounded-xl space-y-2">
+                          <label className="text-[11px] uppercase tracking-wider text-stone-600 font-sans font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Users className="w-3.5 h-3.5 text-maroon-700" />
+                              <span>Adults</span>
+                            </span>
+                            <span className="text-[10px] font-normal text-stone-400 capitalize">(Age 13+)</span>
+                          </label>
+                          <div className="flex items-center justify-between bg-white border border-stone-200 rounded-lg p-1">
+                            <button
+                              type="button"
+                              onClick={() => setAdultsCount(Math.max(1, adultsCount - 1))}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Decrease adults count"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <input
+                              type="number"
+                              min="1"
+                              max="20"
+                              value={adultsCount}
+                              onChange={(e) => setAdultsCount(Math.max(1, parseInt(e.target.value) || 1))}
+                              className="w-12 text-center font-serif text-base font-semibold text-stone-900 outline-none bg-transparent"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setAdultsCount(adultsCount + 1)}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Increase adults count"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Children Input */}
+                        <div className="bg-stone-50/70 border border-stone-200 p-3.5 rounded-xl space-y-2">
+                          <label className="text-[11px] uppercase tracking-wider text-stone-600 font-sans font-bold flex items-center justify-between">
+                            <span className="flex items-center gap-1.5">
+                              <Baby className="w-3.5 h-3.5 text-emerald-700" />
+                              <span>Children</span>
+                            </span>
+                            <span className="text-[10px] font-normal text-stone-400 capitalize">(Under 13)</span>
+                          </label>
+                          <div className="flex items-center justify-between bg-white border border-stone-200 rounded-lg p-1">
+                            <button
+                              type="button"
+                              onClick={() => setChildrenCount(Math.max(0, childrenCount - 1))}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Decrease children count"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <input
+                              type="number"
+                              min="0"
+                              max="20"
+                              value={childrenCount}
+                              onChange={(e) => setChildrenCount(Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-12 text-center font-serif text-base font-semibold text-stone-900 outline-none bg-transparent"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setChildrenCount(childrenCount + 1)}
+                              className="w-8 h-8 rounded-md bg-stone-100 hover:bg-stone-200 active:scale-95 text-stone-700 font-bold flex items-center justify-center cursor-pointer transition-all"
+                              title="Increase children count"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-emerald-50/50 border border-emerald-200/50 rounded-lg px-3 py-1.5 text-[11px] text-emerald-800 font-sans flex items-center justify-between">
+                        <span>Total seats requested:</span>
+                        <span className="font-bold font-serif text-xs text-emerald-900">
+                          {adultsCount + childrenCount} {adultsCount + childrenCount === 1 ? 'Guest' : 'Guests'} ({adultsCount} {adultsCount === 1 ? 'Adult' : 'Adults'}{childrenCount > 0 ? `, ${childrenCount} ${childrenCount === 1 ? 'Child' : 'Children'}` : ''})
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+
+
+                {/* Custom Notes */}
+                <div className="space-y-1.5">
+                  <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold block">
+                    Special Notes / Dietary / Congratulations
+                  </label>
+                  <textarea
+                    placeholder="Optional message (e.g., Congratulations Nyawira & Mainah!, or dietary preferences)"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    rows={3}
+                    className="w-full bg-stone-50/50 border border-stone-200 focus:border-sage-700 focus:ring-1 focus:ring-sage-700/20 rounded-xl px-4 py-3 text-sm text-stone-800 outline-none transition-all resize-none"
+                  />
+                </div>
+
+                {/* Errors display */}
+                {errorMessage && (
+                  <div className="p-3.5 bg-rose-50 border border-rose-250 rounded-xl flex items-center gap-2.5 text-xs text-rose-700">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 bg-sage-700 hover:bg-sage-800 active:scale-98 disabled:opacity-50 text-white font-sans font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Confirm &amp; Generate E-Card</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* E-Invitation Display Column */}
+            <div className="md:col-span-6 flex flex-col items-center">
+              <AnimatePresence mode="wait">
+                {submittedGuest ? (
+                  /* Success / Downloadable E-Card */
+                  <div className="w-full max-w-[380px] flex flex-col items-center space-y-4">
+                    {/* Visual Printable/Downloadable E-Card Element */}
+                    <div
+                      ref={cardRef}
+                      id="downloadable-wedding-ecard"
+                      className="w-full bg-[#FCFAF7] border-2 border-sage-700/30 rounded-3xl p-6 shadow-xl relative flex flex-col overflow-hidden text-stone-800"
+                    >
+                      {/* Decorative Gold & Sage Accents */}
+                      <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-sage-800 via-amber-400 to-sage-800" />
+                      <div className="absolute -top-12 -right-12 w-28 h-28 bg-sage-500/10 rounded-full blur-xl pointer-events-none" />
+                      <div className="absolute -bottom-12 -left-12 w-28 h-28 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+
+                      {/* Top Monogram & Header */}
+                      <div className="text-center pb-4 border-b border-stone-200/80">
+                        <span className="text-[9px] uppercase tracking-widest font-sans font-bold text-sage-800 bg-sage-100/80 border border-sage-200 px-3 py-1 rounded-full inline-block mb-2">
+                          Official Wedding E-Card
+                        </span>
+                        <h4 className="font-serif text-2xl font-normal text-stone-900 tracking-tight">Nyawira &amp; Mainah</h4>
+                        <p className="text-[11px] font-serif italic text-sage-800">Together with their families</p>
+                      </div>
+
+                      {/* Couple Photo Section */}
+                      <div className="my-4 relative rounded-2xl overflow-hidden border border-sage-600/20 shadow-xs">
+                        <img
+                          src={portraitImg}
+                          alt="Nyawira & Mainah Wedding Portrait"
+                          className="w-full h-48 object-cover object-top"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-3">
+                          <p className="text-white text-xs font-serif italic font-light tracking-wide">
+                            “Two are better than one...” — Ecclesiastes 4:9
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Wedding Details */}
+                      <div className="bg-white/80 border border-stone-200/70 rounded-2xl p-4 space-y-2 text-center shadow-xs">
+                        <div className="space-y-0.5">
+                          <p className="text-[10px] text-stone-400 font-sans font-bold uppercase tracking-widest">Date &amp; Time</p>
+                          <p className="font-serif text-sm font-semibold text-stone-900">Wednesday, 19th August 2026 | 10:00 AM</p>
+                        </div>
+                        <div className="border-t border-stone-100 pt-2 space-y-1">
+                          <p className="text-[10px] text-stone-400 font-sans font-bold uppercase tracking-widest">Venues</p>
+                          <p className="text-xs font-serif font-medium text-stone-800">
+                            <strong>Church:</strong> ACK Emmanuel Church Kikuyu
+                          </p>
+                          <p className="text-xs font-serif font-medium text-stone-800">
+                            <strong>Reception:</strong> Leilani Gardens Kikuyu
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Guest Details Section */}
+                      <div className="mt-4 bg-sage-50/70 border border-sage-200/80 rounded-2xl p-4 text-center space-y-2">
+                        <p className="text-[9px] text-sage-800 uppercase tracking-widest font-sans font-bold">Admit Guest / RSVP Record</p>
+                        <p className="font-serif text-lg font-semibold text-stone-900">{submittedGuest.fullName}</p>
+                        
+                        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                          <span className={`text-[10px] uppercase font-sans font-bold px-2.5 py-0.5 rounded-full ${
+                            submittedGuest.willAttend === 'yes' ? 'bg-sage-700 text-white' : 'bg-stone-300 text-stone-700'
+                          }`}>
+                            {submittedGuest.willAttend === 'yes' ? 'Attending' : 'Declined'}
+                          </span>
+                          {submittedGuest.willAttend === 'yes' && (
+                            <span className="text-[10px] font-sans font-medium text-sage-900 bg-white border border-sage-200 px-2.5 py-0.5 rounded-full">
+                              {submittedGuest.adultsCount} Adult{submittedGuest.adultsCount !== 1 ? 's' : ''}
+                              {(submittedGuest.childrenCount ?? 0) > 0 ? `, ${submittedGuest.childrenCount} Child${submittedGuest.childrenCount !== 1 ? 'ren' : ''}` : ''}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Invitation Code & Verification QR */}
+                        <div className="pt-2 flex items-center justify-between border-t border-sage-200/60 text-left">
+                          <div>
+                            <p className="text-[9px] text-stone-400 uppercase font-bold tracking-wider">Invitation Code</p>
+                            <p className="font-mono text-xs font-bold text-sage-900">{submittedGuest.eCardCode}</p>
+                          </div>
+                          <div className="w-12 h-12 bg-white border border-stone-200 rounded-lg p-1 flex items-center justify-center">
+                            <QrCode className="w-full h-full text-sage-800" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-center text-[9px] text-stone-400 mt-3 font-sans uppercase tracking-widest">
+                        Sage Green &amp; Beige Dress Code Requested
+                      </div>
+                    </div>
+
+                    {/* Download & Share Action Buttons */}
+                    <div className="w-full space-y-2.5 pt-2">
+                      <button
+                        onClick={handleDownloadECard}
+                        disabled={downloading}
+                        className="w-full py-3.5 bg-sage-700 hover:bg-sage-800 active:scale-98 disabled:opacity-50 text-white font-sans font-bold text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                      >
+                        {downloading ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Generating Image...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="w-4 h-4" />
+                            <span>Download E-Card (PNG)</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => setSubmittedGuest(null)}
+                        className="w-full py-2.5 text-xs text-stone-500 hover:text-stone-800 font-semibold tracking-wide block text-center cursor-pointer transition-colors"
+                      >
+                        ← Submit Another RSVP
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Standard / Instruction Side Card */
+                  <motion.div
+                    key="standard-state"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="w-full max-w-[360px] bg-white border border-stone-200 shadow-xs rounded-3xl p-6 flex flex-col items-center justify-center text-center space-y-5 relative overflow-hidden group"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-b from-sage-500/0 via-sage-500/0 to-sage-500/[0.005] pointer-events-none" />
+                    
+                    {/* Couple Portrait Preview */}
+                    <div className="w-full h-40 rounded-2xl overflow-hidden border border-stone-200 relative shadow-inner">
+                      <img
+                        src={portraitImg}
+                        alt="Nyawira & Mainah Wedding Preview"
+                        className="w-full h-full object-cover object-top opacity-85 group-hover:opacity-100 transition-opacity"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent flex items-end justify-center p-2">
+                        <span className="text-[10px] text-white font-serif uppercase tracking-widest">Nyawira &amp; Mainah</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <h4 className="font-serif text-lg text-stone-850 font-medium">Downloadable E-Card Preview</h4>
+                      <p className="text-xs text-stone-500 leading-relaxed max-w-[260px] mx-auto">
+                        Fill out the RSVP form on the left to instantly generate and download your custom wedding e-card featuring the couple portrait, ceremony details, and your admittance details.
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-stone-100 w-full text-[10px] text-stone-400 uppercase tracking-widest font-sans font-bold flex items-center justify-center gap-1.5">
+                      <ImageIcon className="w-3.5 h-3.5 text-sage-700" />
+                      <span>Generates Downloadable PNG</span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Floating Action Button */}
+      <AnimatePresence>
+        {showFloatingBtn && (
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 right-6 z-50 pointer-events-auto"
+            id="floating-rsvp-button-wrapper"
+          >
+            <button
+              onClick={scrollToRsvp}
+              className="flex items-center gap-2.5 px-6 py-3.5 bg-sage-700 hover:bg-sage-800 text-white font-sans font-bold text-xs uppercase tracking-wider rounded-full shadow-lg active:scale-95 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-white animate-spin" style={{ animationDuration: '4s' }} />
+              <span>Confirm Attendance</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
