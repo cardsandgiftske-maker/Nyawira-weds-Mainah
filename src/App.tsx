@@ -73,7 +73,7 @@ export default function App() {
   const navItems = [
     { id: 'hero-section', label: 'Welcome', icon: Sparkles },
     { id: 'maps-section', label: 'When & Where', icon: MapPin },
-    { id: 'program-section', label: 'Program', icon: Calendar },
+    { id: 'program-section', label: 'Programme', icon: Calendar },
     { id: 'dress-code-section', label: 'Dress Code', icon: Shirt },
     { id: 'rsvp-section', label: 'RSVP', icon: Mail },
   ];
