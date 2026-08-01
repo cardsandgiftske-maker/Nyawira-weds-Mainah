@@ -51,14 +51,6 @@ export const WEDDING_DETAILS = {
       text: 'Two are better than one, because they have a good return for their labor.',
       reference: 'Ecclesiastes 4:9',
     },
-    {
-      text: 'We love because He first loved us.',
-      reference: '1 John 4:19',
-    },
-    {
-      text: 'When the time is right, I, the Lord will make it happen.',
-      reference: 'Isaiah 60:22',
-    }
   ]
 };
 
