@@ -31,7 +31,7 @@ export default function Program() {
         {/* Section Title */}
         <div className="text-center mb-16">
           <span className="text-sage-800 text-xs font-semibold tracking-widest uppercase font-sans">The Wedding Schedule</span>
-          <h2 className="text-3xl md:text-5xl font-display font-light text-stone-900 mt-2 mb-4">Wedding Program</h2>
+          <h2 className="text-3xl md:text-5xl font-display font-light text-stone-900 mt-2 mb-4">Wedding Programme</h2>
           <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-sage-600/30 to-transparent mx-auto" />
           <p className="text-stone-600 text-sm md:text-base mt-4 max-w-xl mx-auto italic font-serif">
             “Two are better than one, because they have a good return for their labor.” <br />
@@ -136,7 +136,7 @@ export default function Program() {
 
         {/* Closing Card */}
         <div className="mt-14 text-center bg-white border border-stone-200 p-6 rounded-2xl max-w-xl mx-auto shadow-xs">
-          <p className="font-serif text-sage-900 italic text-base">“We look forward to celebrating this day with you!”</p>
+          <p className="font-serif text-sage-900 italic text-base">“We look forward to celebrating this joyous occasion with you, as we say ‘I Do’”</p>
         </div>
       </div>
     </section>
