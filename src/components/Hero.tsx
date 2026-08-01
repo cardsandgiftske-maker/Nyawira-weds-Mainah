@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Heart, Calendar, MapPin, Clock, Sparkles, ChevronLeft, ChevronRight, Cake } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Calendar, Cake } from 'lucide-react';
 import { WEDDING_DATE, WEDDING_DETAILS } from '../data';
 import Crest from './Crest';
 import portraitImg from '../assets/images/wedding_portrait_1785380701719.jpg';
@@ -21,8 +21,6 @@ export default function Hero() {
     seconds: 0,
     isPassed: false,
   });
-
-  const [activeVerseIndex, setActiveVerseIndex] = useState(0);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -49,15 +47,7 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, []);
 
-  const verses = WEDDING_DETAILS.bibleVerses;
-
-  const nextVerse = () => {
-    setActiveVerseIndex((prev) => (prev + 1) % verses.length);
-  };
-
-  const prevVerse = () => {
-    setActiveVerseIndex((prev) => (prev - 1 + verses.length) % verses.length);
-  };
+  const verses = WEDDING_DETAILS.bibleVerses.slice(0, 3);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#FCFAF7] text-stone-850 py-16" id="hero-section">
@@ -137,57 +127,26 @@ export default function Hero() {
           </p>
         </motion.div>
 
-        {/* Biblical Quote Carousel */}
+        {/* 3 Separate Biblical Quotes */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.9 }}
-          className="max-w-md w-full mx-auto mb-10 text-stone-700 italic font-serif text-sm md:text-base border-y border-stone-200/80 py-4 relative group"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.9 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl w-full mx-auto mb-10"
         >
-          <div className="flex items-center justify-between gap-2">
-            <button
-              onClick={prevVerse}
-              className="p-1 rounded-full text-stone-400 hover:text-sage-700 hover:bg-stone-100 transition-colors cursor-pointer"
-              title="Previous Scripture"
+          {verses.map((verse, idx) => (
+            <div
+              key={`hero-verse-${idx}`}
+              className="bg-white/90 border border-stone-200/90 rounded-2xl p-4 md:p-5 flex flex-col justify-between text-center shadow-xs hover:border-sage-300 transition-all"
             >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <div className="flex-1 min-h-[50px] flex flex-col items-center justify-center px-2">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeVerseIndex}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-center"
-                >
-                  <p className="mb-1 text-stone-800">“{verses[activeVerseIndex].text}”</p>
-                  <p className="text-sage-700 font-sans text-[11px] tracking-wider uppercase font-semibold not-italic">
-                    — {verses[activeVerseIndex].reference}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
+              <p className="font-serif italic text-stone-800 text-sm md:text-base leading-relaxed mb-3">
+                “{verse.text}”
+              </p>
+              <p className="text-[#8C3B3B] font-sans text-[11px] font-bold tracking-widest uppercase not-italic">
+                — {verse.reference}
+              </p>
             </div>
-            <button
-              onClick={nextVerse}
-              className="p-1 rounded-full text-stone-400 hover:text-sage-700 hover:bg-stone-100 transition-colors cursor-pointer"
-              title="Next Scripture"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="flex justify-center gap-1 mt-2">
-            {verses.map((_, i) => (
-              <button
-                key={`verse-dot-${i}`}
-                onClick={() => setActiveVerseIndex(i)}
-                className={`w-1.5 h-1.5 rounded-full transition-all cursor-pointer ${
-                  i === activeVerseIndex ? 'bg-sage-600 w-3' : 'bg-stone-300'
-                }`}
-              />
-            ))}
-          </div>
+          ))}
         </motion.div>
 
         {/* Countdown timer */}
