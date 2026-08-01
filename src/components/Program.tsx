@@ -136,7 +136,7 @@ export default function Program() {
 
         {/* Closing Card */}
         <div className="mt-14 text-center bg-white border border-stone-200 p-6 rounded-2xl max-w-xl mx-auto shadow-xs">
-          <p className="font-serif text-sage-900 italic text-base">“We look forward to celebrating this joyous occasion with you, as we say ‘I Do’”</p>
+          <p className="font-serif text-sage-900 italic text-base">“We look forward to celebrating this day with you!”</p>
         </div>
       </div>
     </section>
