@@ -65,7 +65,7 @@ export default function Envelope({ onOpen, onSealBreak }: EnvelopeProps) {
           {/* Top header on the phone style invitation screen */}
           <div className="w-full text-center pt-8 px-6 z-10">
             <span className="text-[10px] tracking-[0.25em] uppercase font-sans font-extrabold text-stone-500/80">
-              Wedding Invitation
+              Invitation
             </span>
             <h1 className="font-serif text-xl tracking-[0.1em] text-sage-900 font-semibold mt-2">
               NYAWIRA &amp; MAINAH
@@ -282,11 +282,11 @@ export default function Envelope({ onOpen, onSealBreak }: EnvelopeProps) {
                       </div>
                     </div>
 
-                    {/* Interactive feedback indicator: subtle pulsing call-to-action text */}
-                    <div className="absolute top-full mt-4 left-1/2 -translate-x-1/2 whitespace-nowrap text-center">
-                      <p className="font-serif italic text-xs tracking-wide text-amber-100/90 drop-shadow flex items-center justify-center gap-1.5 animate-bounce" style={{ animationDuration: '2.5s' }}>
-                        <Sparkles className="w-3.5 h-3.5 text-amber-200 animate-spin" style={{ animationDuration: '6s' }} />
-                        <span>Tap Seal to Open</span>
+                    {/* Interactive feedback indicator: high-visibility call-to-action badge */}
+                    <div className="absolute top-full mt-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-center z-40">
+                      <p className="font-sans font-bold text-xs uppercase tracking-widest text-stone-900 bg-white/95 border-2 border-sage-700/60 px-4 py-1.5 rounded-full shadow-lg flex items-center justify-center gap-2 animate-bounce" style={{ animationDuration: '2s' }}>
+                        <Sparkles className="w-3.5 h-3.5 text-sage-800 animate-spin" style={{ animationDuration: '4s' }} />
+                        <span className="text-sage-950">Tap Seal to Open</span>
                       </p>
                     </div>
                   </motion.div>
