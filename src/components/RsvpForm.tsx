@@ -470,7 +470,7 @@ export default function RsvpForm() {
                       </div>
 
                       <div className="text-center text-[9px] text-stone-400 mt-3 font-sans uppercase tracking-widest">
-                        Sage Green &amp; Beige Dress Code Requested
+                        Formal / Elegant Attire Requested
                       </div>
                     </div>
 
