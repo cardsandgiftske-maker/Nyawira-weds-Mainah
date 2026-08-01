@@ -39,7 +39,7 @@ export default function LocationMap() {
             </div>
             <p className="text-xs text-stone-500 uppercase tracking-widest font-sans font-semibold mb-1">The Date</p>
             <p className="text-sm text-stone-800 font-serif font-medium">Wednesday</p>
-            <p className="text-base text-sage-800 font-serif font-semibold">August 19, 2026</p>
+            <p className="text-base text-sage-800 font-serif font-semibold">19 August 2026</p>
           </div>
 
           {/* Time Card */}
