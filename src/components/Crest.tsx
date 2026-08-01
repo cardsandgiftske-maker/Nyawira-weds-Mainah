@@ -39,34 +39,6 @@ export default function Crest({ size = 'md', animated = true }: CrestProps) {
     },
   };
 
-  const branchVariants = {
-    hidden: { opacity: 0, scale: 0.92, y: 8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        delay: 0.5,
-        duration: 1.2,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
-
-  const heartVariants = {
-    hidden: { opacity: 0, scale: 0 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        delay: 0.8,
-        type: 'spring',
-        stiffness: 120,
-        damping: 12,
-      },
-    },
-  };
-
   const CrestContent = (
     <div className={`relative flex items-center justify-center ${sizeClasses[size]} select-none`} id="wedding-crest-container">
       {/* Delicate Gold/Wine Glow Effect */}
@@ -78,33 +50,37 @@ export default function Crest({ size = 'md', animated = true }: CrestProps) {
         fill="none"
         id="wedding-crest-svg"
       >
-        {/* Monogram Letters (N & M) */}
+        {/* Monogram Letters (N & M) with Interlocking Wedding Rings between them */}
         {animated ? (
           <motion.g variants={textVariants}>
             <text
-              x="54"
+              x="48"
               y="98"
               textAnchor="middle"
-              className="font-serif font-bold select-none fill-current text-sage-800"
-              style={{ fontSize: '64px' }}
+              className="font-serif font-bold select-none fill-current text-sage-900"
+              style={{ fontSize: '62px' }}
             >
               N
             </text>
+
+            {/* Interlocking Wedding Rings Element */}
+            <g className="text-[#8C3B3B]">
+              {/* Left Ring */}
+              <circle cx="92" cy="78" r="12" stroke="currentColor" strokeWidth="2.2" fill="none" />
+              {/* Right Ring */}
+              <circle cx="108" cy="78" r="12" stroke="currentColor" strokeWidth="2.2" fill="none" />
+              {/* Interlocking Overlap */}
+              <path d="M 97 68 A 12 12 0 0 1 103 80" stroke="currentColor" strokeWidth="2.2" fill="none" />
+              {/* Diamond Gem Accent on top of right ring */}
+              <path d="M 108 61 L 111.5 65 L 108 69 L 104.5 65 Z" fill="currentColor" />
+            </g>
+
             <text
-              x="100"
-              y="90"
-              textAnchor="middle"
-              className="font-serif italic select-none fill-current text-sage-600/80"
-              style={{ fontSize: '32px' }}
-            >
-              &amp;
-            </text>
-            <text
-              x="146"
+              x="152"
               y="98"
               textAnchor="middle"
-              className="font-serif font-bold select-none fill-current text-sage-800"
-              style={{ fontSize: '64px' }}
+              className="font-serif font-bold select-none fill-current text-sage-900"
+              style={{ fontSize: '62px' }}
             >
               M
             </text>
@@ -112,125 +88,36 @@ export default function Crest({ size = 'md', animated = true }: CrestProps) {
         ) : (
           <g>
             <text
-              x="54"
+              x="48"
               y="98"
               textAnchor="middle"
-              className="font-serif font-bold select-none fill-current text-sage-800"
-              style={{ fontSize: '64px' }}
+              className="font-serif font-bold select-none fill-current text-sage-900"
+              style={{ fontSize: '62px' }}
             >
               N
             </text>
+
+            {/* Interlocking Wedding Rings Element */}
+            <g className="text-[#8C3B3B]">
+              {/* Left Ring */}
+              <circle cx="92" cy="78" r="12" stroke="currentColor" strokeWidth="2.2" fill="none" />
+              {/* Right Ring */}
+              <circle cx="108" cy="78" r="12" stroke="currentColor" strokeWidth="2.2" fill="none" />
+              {/* Interlocking Overlap */}
+              <path d="M 97 68 A 12 12 0 0 1 103 80" stroke="currentColor" strokeWidth="2.2" fill="none" />
+              {/* Diamond Gem Accent on top of right ring */}
+              <path d="M 108 61 L 111.5 65 L 108 69 L 104.5 65 Z" fill="currentColor" />
+            </g>
+
             <text
-              x="100"
-              y="90"
-              textAnchor="middle"
-              className="font-serif italic select-none fill-current text-sage-600/80"
-              style={{ fontSize: '32px' }}
-            >
-              &amp;
-            </text>
-            <text
-              x="146"
+              x="152"
               y="98"
               textAnchor="middle"
-              className="font-serif font-bold select-none fill-current text-sage-800"
-              style={{ fontSize: '64px' }}
+              className="font-serif font-bold select-none fill-current text-sage-900"
+              style={{ fontSize: '62px' }}
             >
               M
             </text>
-          </g>
-        )}
-
-        {/* Symmetrical Olive Leaves Branch (smiling horizontally below the monogram) */}
-        {animated ? (
-          <motion.g
-            variants={branchVariants}
-            className="text-maroon-700"
-            stroke="currentColor"
-            fill="none"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {/* Left Branch */}
-            <path d="M 100,140 Q 65,140 35,130" strokeWidth="1.5" />
-            
-            {/* Left Branch Leaves */}
-            <path d="M 35,130 C 27,123 17,123 11,127 C 17,135 27,135 35,130" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 55,137 C 47,121 37,117 31,123 C 39,131 49,135 55,137" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 75,140 C 67,124 57,120 51,126 C 59,134 69,138 75,140" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 55,137 C 47,153 37,157 31,151 C 39,143 49,139 55,137" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 75,140 C 67,156 57,160 51,154 C 59,146 69,142 75,140" fill="currentColor" fillOpacity="0.1" />
-
-            {/* Right Branch (Mirrored) */}
-            <g transform="translate(200, 0) scale(-1, 1)">
-              <path d="M 100,140 Q 65,140 35,130" strokeWidth="1.5" />
-              <path d="M 35,130 C 27,123 17,123 11,127 C 17,135 27,135 35,130" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 55,137 C 47,121 37,117 31,123 C 39,131 49,135 55,137" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 75,140 C 67,124 57,120 51,126 C 59,134 69,138 75,140" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 55,137 C 47,153 37,157 31,151 C 39,143 49,139 55,137" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 75,140 C 67,156 57,160 51,154 C 59,146 69,142 75,140" fill="currentColor" fillOpacity="0.1" />
-            </g>
-          </motion.g>
-        ) : (
-          <g
-            className="text-maroon-700"
-            stroke="currentColor"
-            fill="none"
-            strokeWidth="1.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {/* Left Branch */}
-            <path d="M 100,140 Q 65,140 35,130" strokeWidth="1.5" />
-            
-            {/* Left Branch Leaves */}
-            <path d="M 35,130 C 27,123 17,123 11,127 C 17,135 27,135 35,130" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 55,137 C 47,121 37,117 31,123 C 39,131 49,135 55,137" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 75,140 C 67,124 57,120 51,126 C 59,134 69,138 75,140" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 55,137 C 47,153 37,157 31,151 C 39,143 49,139 55,137" fill="currentColor" fillOpacity="0.1" />
-            <path d="M 75,140 C 67,156 57,160 51,154 C 59,146 69,142 75,140" fill="currentColor" fillOpacity="0.1" />
-
-            {/* Right Branch (Mirrored) */}
-            <g transform="translate(200, 0) scale(-1, 1)">
-              <path d="M 100,140 Q 65,140 35,130" strokeWidth="1.5" />
-              <path d="M 35,130 C 27,123 17,123 11,127 C 17,135 27,135 35,130" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 55,137 C 47,121 37,117 31,123 C 39,131 49,135 55,137" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 75,140 C 67,124 57,120 51,126 C 59,134 69,138 75,140" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 55,137 C 47,153 37,157 31,151 C 39,143 49,139 55,137" fill="currentColor" fillOpacity="0.1" />
-              <path d="M 75,140 C 67,156 57,160 51,154 C 59,146 69,142 75,140" fill="currentColor" fillOpacity="0.1" />
-            </g>
-          </g>
-        )}
-
-        {/* Symmetrical Centered Hearts (Top and Bottom) */}
-        {animated ? (
-          <g>
-            <motion.path
-              variants={heartVariants}
-              d="M 100,123.5 C 97.5,120, 94.5,120, 94.5,123 C 94.5,125.5, 97.5,127.5, 100,130 C 102.5,127.5, 105.5,125.5, 105.5,123 C 105.5,120, 102.5,120, 100,123.5 Z"
-              fill="currentColor"
-              className="text-maroon-700"
-            />
-            <motion.path
-              variants={heartVariants}
-              d="M 100,150.5 C 97.5,147, 94.5,147, 94.5,150 C 94.5,152.5, 97.5,154.5, 100,157 C 102.5,154.5, 105.5,152.5, 105.5,150 C 105.5,147, 102.5,147, 100,150.5 Z"
-              fill="currentColor"
-              className="text-maroon-700"
-            />
-          </g>
-        ) : (
-          <g>
-            <path
-              d="M 100,123.5 C 97.5,120, 94.5,120, 94.5,123 C 94.5,125.5, 97.5,127.5, 100,130 C 102.5,127.5, 105.5,125.5, 105.5,123 C 105.5,120, 102.5,120, 100,123.5 Z"
-              fill="currentColor"
-              className="text-maroon-700"
-            />
-            <path
-              d="M 100,150.5 C 97.5,147, 94.5,147, 94.5,150 C 94.5,152.5, 97.5,154.5, 100,157 C 102.5,154.5, 105.5,152.5, 105.5,150 C 105.5,147, 102.5,147, 100,150.5 Z"
-              fill="currentColor"
-              className="text-maroon-700"
-            />
           </g>
         )}
       </svg>
