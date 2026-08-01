@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Clipboard, QrCode, Download, Share2, CloudLightning, Users, Baby, Plus, Minus, Image as ImageIcon } from 'lucide-react';
+import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Clipboard, QrCode, Download, Share2, CloudLightning, Users, Baby, Plus, Minus, Image as ImageIcon, Calendar } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { RsvpGuest } from '../types';
 import { WEDDING_DETAILS } from '../data';
@@ -146,12 +146,29 @@ export default function RsvpForm() {
 
         <div className="container mx-auto px-4 max-w-4xl relative z-10">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-display font-light text-stone-900 mt-2 mb-4">Confirm Attendance</h2>
-            <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-sage-600/30 to-transparent mx-auto" />
-            <p className="text-stone-600 text-sm md:text-base mt-4 max-w-xl mx-auto italic font-serif">
-              Kindly RSVP by 5th August 2026 to help us prepare for your presence. Thank you!
-            </p>
+          <div className="text-center mb-12">
+            <span className="text-[#8C3B3B] text-[11px] font-bold tracking-[0.2em] uppercase font-sans block mb-2">
+              CONFIRM ATTENDANCE
+            </span>
+            <h2 className="text-3xl md:text-5xl font-serif font-normal text-stone-900 tracking-tight mb-3">
+              RSVP
+            </h2>
+            <div className="w-16 h-[1px] bg-sage-600/40 mx-auto mb-6" />
+            
+            {/* Prominent Callout Banner for RSVP Deadline */}
+            <div className="inline-block w-full max-w-lg mx-auto bg-amber-50/90 border border-amber-300/80 shadow-xs rounded-2xl p-5 text-stone-900 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-[#8C3B3B] to-amber-400" />
+              <div className="flex items-center justify-center gap-2 mb-1.5 text-[#8C3B3B] font-sans font-bold text-xs uppercase tracking-widest">
+                <Calendar className="w-4 h-4 text-[#8C3B3B]" />
+                <span>Important RSVP Notice</span>
+              </div>
+              <p className="text-base md:text-lg font-serif font-medium text-stone-900 leading-relaxed">
+                Kindly RSVP by <span className="text-[#8C3B3B] font-bold underline decoration-amber-400 underline-offset-4">10th August 2026</span> to help us prepare for your presence.
+              </p>
+              <p className="text-xs text-stone-600 font-sans mt-1.5 italic">
+                Thank you for confirming your attendance!
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
