@@ -344,10 +344,10 @@ export default function RsvpForm() {
                 {/* Custom Notes */}
                 <div className="space-y-1.5">
                   <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold block">
-                    Special Notes / Dietary / Congratulations
+                    Special Notes / Congratulations
                   </label>
                   <textarea
-                    placeholder="Optional message (e.g., Congratulations Nyawira & Mainah!, or dietary preferences)"
+                    placeholder="Optional message (e.g., Congratulations Nyawira & Mainah!)"
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
