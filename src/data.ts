@@ -90,8 +90,7 @@ export const PROGRAM_ITEMS: ProgramItem[] = [
     time: '3:15 PM - 4:15 PM',
     duration: '1 hour',
     title: 'Cake Cutting Ceremony',
-    description: 'Guess what? We have found a reason to have cake! Come join us for the cake cutting and toast.',
-    bullets: ['Cake Cutting', 'Sharing with Parents & Best Couple', 'Distribution to Guests'],
+    bullets: ['Cake Cutting'],
     isChurch: false,
   },
   {
