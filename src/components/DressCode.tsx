@@ -16,7 +16,7 @@ export default function DressCode() {
           </h2>
           <div className="w-16 h-[1px] bg-sage-600/40 mx-auto my-5" />
           <p className="text-stone-600 text-base md:text-lg max-w-2xl mx-auto italic font-serif leading-relaxed">
-            We kindly invite you to celebrate with us in elegant attire befitting this joyous occasion.
+            Happy.Elegant. Whatever makes you glow. FYI: We love Sage green and Beige
           </p>
         </div>
       </div>
