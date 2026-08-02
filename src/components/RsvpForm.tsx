@@ -166,7 +166,7 @@ export default function RsvpForm() {
                 Kindly RSVP by <span className="text-[#8C3B3B] font-bold underline decoration-amber-400 underline-offset-4">10th August 2026</span> to help us prepare for your presence.
               </p>
               <p className="text-xs text-stone-600 font-sans mt-1.5 italic">
-                Thank you for confirming your attendance!
+                Thank you!
               </p>
             </div>
           </div>
