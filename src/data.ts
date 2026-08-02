@@ -90,7 +90,7 @@ export const PROGRAM_ITEMS: ProgramItem[] = [
     time: '3:15 PM - 4:15 PM',
     duration: '1 hour',
     title: 'Cake Cutting Ceremony',
-     description: 'Where there's cake, there is joy. Let there be cake!',
+    description: 'Where there\'s cake, there is joy. Let there be cake!',
     bullets: ['Cake Cutting'],
     isChurch: false,
   },
