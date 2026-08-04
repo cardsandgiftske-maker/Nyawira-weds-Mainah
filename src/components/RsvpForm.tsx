@@ -548,7 +548,7 @@ export default function RsvpForm() {
                       <span>Generates Downloadable PNG</span>
                     </div>
                   </motion.div>
-                )}
+          
               </AnimatePresence>
             </div>
           </div>
