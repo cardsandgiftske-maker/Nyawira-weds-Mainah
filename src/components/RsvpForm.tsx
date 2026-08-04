@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, CheckCircle2, AlertCircle, Sparkles, User, Phone, Check, Clipboard, QrCode, Download, Share2, CloudLightning, Users, Baby, Plus, Minus, Image as ImageIcon, Calendar } from 'lucide-react';
+import { Mail, AlertCircle, Sparkles, User, Phone, Check, QrCode, Download, Users, Baby, Plus, Minus, Image as ImageIcon, Calendar } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { RsvpGuest } from '../types';
-import { WEDDING_DETAILS } from '../data';
 import { saveRsvp, isFirebaseConfigured, hasPhoneAlreadyRsvped } from '../lib/firebase';
 import portraitImg from '../assets/images/wedding_portrait_1785380701719.jpg';
 
@@ -356,8 +355,6 @@ export default function RsvpForm() {
                   )}
                 </AnimatePresence>
 
-
-
                 {/* Custom Notes */}
                 <div className="space-y-1.5">
                   <label className="text-xs uppercase tracking-widest text-stone-500 font-sans font-bold block">
@@ -484,6 +481,8 @@ export default function RsvpForm() {
                             <QrCode className="w-full h-full text-sage-800" />
                           </div>
                         </div>
+                      </div>
+                    </div>
 
                     {/* Download & Share Action Buttons */}
                     <div className="w-full space-y-2.5 pt-2">
@@ -548,7 +547,7 @@ export default function RsvpForm() {
                       <span>Generates Downloadable PNG</span>
                     </div>
                   </motion.div>
-          
+                )}
               </AnimatePresence>
             </div>
           </div>
