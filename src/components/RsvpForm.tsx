@@ -484,12 +484,6 @@ export default function RsvpForm() {
                             <QrCode className="w-full h-full text-sage-800" />
                           </div>
                         </div>
-                      </div>
-
-                      <div className="text-center text-[9px] text-stone-400 mt-3 font-sans uppercase tracking-widest">
-                        Formal / Elegant Attire Requested
-                      </div>
-                    </div>
 
                     {/* Download & Share Action Buttons */}
                     <div className="w-full space-y-2.5 pt-2">
